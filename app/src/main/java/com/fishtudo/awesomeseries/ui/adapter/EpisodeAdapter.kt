@@ -7,37 +7,37 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.fishtudo.awesomeseries.R
 import com.fishtudo.awesomeseries.model.Episode
-import kotlinx.android.synthetic.main.show_item.view.*
+import kotlinx.android.synthetic.main.episode_item.view.*
 
-class SeasonAdapter(
+class EpisodeAdapter(
     private val context: Context,
-    private val seasonList: MutableList<Episode> = mutableListOf(),
+    private val episodeList: MutableList<Episode> = mutableListOf(),
     var onItemClickListener: (show: Episode) -> Unit = {}
-) : RecyclerView.Adapter<SeasonAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<EpisodeAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(context)
                 .inflate(
-                    R.layout.season_item,
+                    R.layout.episode_item,
                     parent, false
                 )
         )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setItem(seasonList[position])
+        holder.setItem(episodeList[position])
     }
 
     override fun getItemCount(): Int {
-        return seasonList.size
+        return episodeList.size
     }
 
     fun updateItems(showList: List<Episode>) {
-        notifyItemRangeRemoved(0, this.seasonList.size)
-        this.seasonList.clear()
-        this.seasonList.addAll(showList)
-        notifyItemRangeInserted(0, this.seasonList.size)
+        notifyItemRangeRemoved(0, this.episodeList.size)
+        this.episodeList.clear()
+        this.episodeList.addAll(showList)
+        notifyItemRangeInserted(0, this.episodeList.size)
     }
 
     private fun onClickItem(episode: Episode) {
@@ -58,7 +58,7 @@ class SeasonAdapter(
 
         fun setItem(episode: Episode) {
             this.episode = episode
-            itemView.seasonNumber.text = episode.url
+            "${episode.number} - ${episode.name}".also { itemView.description.text = it }
         }
     }
 }

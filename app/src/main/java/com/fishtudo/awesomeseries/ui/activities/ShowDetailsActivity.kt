@@ -3,20 +3,23 @@ package com.fishtudo.awesomeseries.ui.activities
 import android.os.Bundle
 import android.text.Html
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.fishtudo.awesomeseries.R
+import com.fishtudo.awesomeseries.model.Episode
 import com.fishtudo.awesomeseries.model.Season
 import com.fishtudo.awesomeseries.model.Show
 import com.fishtudo.awesomeseries.repositories.TVMazeRepository
-import com.fishtudo.awesomeseries.ui.adapter.SeasonAdapter
+import com.fishtudo.awesomeseries.ui.adapter.EpisodeAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.ListEpisodeViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.ListSeasonViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.EpisodeListViewModelFactory
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.ShowDetailsViewModelFactory
 import com.fishtudo.awesomeseries.util.ImageUtil
 import kotlinx.android.synthetic.main.activity_show_details.*
+import kotlinx.android.synthetic.main.activity_show_details.recyclerview
 
 
 class ShowDetailsActivity : AppCompatActivity() {
@@ -36,12 +39,13 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private val adapter by lazy {
-        SeasonAdapter(context = this)
+        EpisodeAdapter(context = this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_details)
+        setRecyclerViewUp()
         findShowInIntent()?.let {
             seasonNumber.text = it.name
             days_in_air.text = it.schedule.days.joinToString()
@@ -52,6 +56,21 @@ class ShowDetailsActivity : AppCompatActivity() {
             requestSeasons(it)
         }
     }
+
+    private fun setRecyclerViewUp() {
+        recyclerview.adapter = adapter
+        recyclerview.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+        adapter.onItemClickListener = this::onItemClicked
+    }
+
+    private fun onItemClicked(episode: Episode) {
+//        val bundle = Bundle()
+//        bundle.putParcelable(PARAMETER_PARCELABLE_ITEM, show)
+//        val intent = Intent(this, ShowDetailsActivity::class.java)
+//        intent.putExtra(PARAMETER_BUNDLE, bundle)
+//        startActivity(intent)
+    }
+
 
     private fun configureSpinner(list: List<Season>) {
         spinner.adapter =
@@ -76,8 +95,11 @@ class ShowDetailsActivity : AppCompatActivity() {
 
     private fun requestEpisodeList(show: Season) {
         episodesViewModel.listEpisodeBySeason(show.id).observe(this) { resource ->
-//            adapter.updateItems(resource.data)
-            Toast.makeText(this, "Baixou", Toast.LENGTH_SHORT).show()
+            resource?.data.let { list ->
+                list?.let {
+                    adapter.updateItems(it)
+                }
+            }
         }
     }
 

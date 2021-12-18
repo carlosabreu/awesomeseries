@@ -8,4 +8,5 @@ data class Episode(
     var id: Int,
     var url: String,
     var number: String,
+    var name: String,
 ) : Parcelable

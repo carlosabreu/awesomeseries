@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         recyclerview.adapter = adapter
         recyclerview.addItemDecoration(DividerItemDecoration(this, VERTICAL))
         adapter.onItemClickListener = this::onItemClicked
-
     }
 
     private fun onItemClicked(show: Show) {
