@@ -2,7 +2,10 @@ package com.fishtudo.awesomeseries.ui.activities
 
 import android.os.Bundle
 import android.text.Html
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -19,7 +22,6 @@ import com.fishtudo.awesomeseries.ui.viewmodel.factory.EpisodeListViewModelFacto
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.ShowDetailsViewModelFactory
 import com.fishtudo.awesomeseries.util.ImageUtil
 import kotlinx.android.synthetic.main.activity_show_details.*
-import kotlinx.android.synthetic.main.activity_show_details.recyclerview
 
 
 class ShowDetailsActivity : AppCompatActivity() {
@@ -42,6 +44,8 @@ class ShowDetailsActivity : AppCompatActivity() {
         EpisodeAdapter(context = this)
     }
 
+    var seasonCache: List<Season>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_details)
@@ -63,28 +67,15 @@ class ShowDetailsActivity : AppCompatActivity() {
         adapter.onItemClickListener = this::onItemClicked
     }
 
-    private fun onItemClicked(episode: Episode) {
-//        val bundle = Bundle()
-//        bundle.putParcelable(PARAMETER_PARCELABLE_ITEM, show)
-//        val intent = Intent(this, ShowDetailsActivity::class.java)
-//        intent.putExtra(PARAMETER_BUNDLE, bundle)
-//        startActivity(intent)
-    }
-
-
-    private fun configureSpinner(list: List<Season>) {
-        spinner.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
-                list.map {
-                    it.number
-                })
-    }
+    private fun findShowInIntent() =
+        intent.getBundleExtra(PARAMETER_BUNDLE)?.getParcelable<Show>(PARAMETER_PARCELABLE_ITEM)
 
     private fun requestSeasons(it: Show) {
         seasonsViewModel.listSeasons(showId = it.id).observe(this) { resource ->
             resource?.data.let { list ->
                 list?.let {
                     configureSpinner(it)
+                    seasonCache = it
                     if (it.isNotEmpty()) {
                         requestEpisodeList(it[0])
                     }
@@ -93,8 +84,34 @@ class ShowDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestEpisodeList(show: Season) {
-        episodesViewModel.listEpisodeBySeason(show.id).observe(this) { resource ->
+    private fun configureSpinner(list: List<Season>) {
+        spinner.adapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
+                list.map {
+                    it.number
+                })
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View,
+                position: Int,
+                l: Long
+            ) {
+                seasonCache?.let {
+                    requestEpisodeList(it[position])
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+                return
+            }
+        }
+
+    }
+
+    private fun requestEpisodeList(season: Season) {
+        episodesViewModel.listEpisodeBySeason(season.id).observe(this) { resource ->
             resource?.data.let { list ->
                 list?.let {
                     adapter.updateItems(it)
@@ -103,7 +120,13 @@ class ShowDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun findShowInIntent() =
-        intent.getBundleExtra(PARAMETER_BUNDLE)?.getParcelable<Show>(PARAMETER_PARCELABLE_ITEM)
+    private fun onItemClicked(episode: Episode) {
+//        val bundle = Bundle()
+//        bundle.putParcelable(PARAMETER_PARCELABLE_ITEM, show)
+//        val intent = Intent(this, ShowDetailsActivity::class.java)
+//        intent.putExtra(PARAMETER_BUNDLE, bundle)
+//        startActivity(intent)
+    }
+
 }
 
