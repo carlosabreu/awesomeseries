@@ -83,7 +83,7 @@ class TVMazeRepository {
             }
 
             override fun onFailure(call: Call<List<Episode>>, t: Throwable) {
-
+                seasonLiveData.value = Resource(error = "Conection Error", data = null)
             }
         })
         return episodeLiveData

@@ -12,6 +12,6 @@ class ImageUtil {
         }
     }
 
-    private fun findProperImageUrl(imageMap: Map<String, String>) =
+    fun findProperImageUrl(imageMap: Map<String, String>) =
         imageMap[MEDIUM_IMAGE] ?: imageMap[ORIGINAL_IMAGE]
 }
