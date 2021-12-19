@@ -35,7 +35,7 @@ class TVMazeRepository {
             }
 
             override fun onFailure(call: Call<List<Show>>, t: Throwable) {
-
+                showLiveData.value = Resource(null, "Unable to connect to server")
             }
         })
         return showLiveData
@@ -54,7 +54,7 @@ class TVMazeRepository {
             }
 
             override fun onFailure(call: Call<List<SearchResult>>, t: Throwable) {
-                println("Error")
+                showLiveData.value = Resource(null, "Unable to connect to server")
             }
         })
         return showLiveData
