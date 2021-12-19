@@ -56,7 +56,9 @@ class ShowDetailsActivity : AppCompatActivity() {
             time_in_air.text = it.schedule.time
             genres.text = it.genres[0]
             summary.text = Html.fromHtml(it.summary, Html.FROM_HTML_MODE_COMPACT)
-            imageUtil.downloadImage(this, it.image, poster)
+            it.image?.let { image ->
+                imageUtil.downloadImage(this, image, poster)
+            }
             requestSeasons(it)
         }
     }

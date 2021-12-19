@@ -3,6 +3,7 @@ package com.fishtudo.awesomeseries.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.fishtudo.awesomeseries.model.Episode
+import com.fishtudo.awesomeseries.model.SearchResult
 import com.fishtudo.awesomeseries.model.Season
 import com.fishtudo.awesomeseries.model.Show
 import com.fishtudo.awesomeseries.util.TVMAZE_URL
@@ -35,6 +36,25 @@ class TVMazeRepository {
 
             override fun onFailure(call: Call<List<Show>>, t: Throwable) {
 
+            }
+        })
+        return showLiveData
+    }
+
+    fun searchShow(term: String): LiveData<Resource<List<Show>>> {
+        val call: Call<List<SearchResult>> = service.searchShows(term)
+        call.enqueue(object : Callback<List<SearchResult>> {
+            override fun onResponse(
+                call: Call<List<SearchResult>>,
+                response: Response<List<SearchResult>>
+            ) {
+                response.body()?.let { searchResultList ->
+                    showLiveData.value = Resource(searchResultList.map { it.show })
+                }
+            }
+
+            override fun onFailure(call: Call<List<SearchResult>>, t: Throwable) {
+                println("Error")
             }
         })
         return showLiveData

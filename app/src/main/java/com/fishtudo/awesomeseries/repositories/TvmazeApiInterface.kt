@@ -1,9 +1,11 @@
 package com.fishtudo.awesomeseries.repositories
 
 import com.fishtudo.awesomeseries.model.Episode
+import com.fishtudo.awesomeseries.model.SearchResult
 import com.fishtudo.awesomeseries.model.Season
 import com.fishtudo.awesomeseries.model.Show
 import com.fishtudo.awesomeseries.util.EPISODES_LIST
+import com.fishtudo.awesomeseries.util.SEARCH_SHOW
 import com.fishtudo.awesomeseries.util.SEASONS_LIST
 import com.fishtudo.awesomeseries.util.SHOW_LIST
 import retrofit2.Call
@@ -15,6 +17,9 @@ interface TvmazeApiInterface {
 
     @GET(SHOW_LIST)
     fun listShows(@Query("page") page: Int): Call<List<Show>>
+
+    @GET(SEARCH_SHOW)
+    fun searchShows(@Query("q") searchParameter: String): Call<List<SearchResult>>
 
     @GET(SEASONS_LIST)
     fun listSeasons(@Path("showId") showId: Int): Call<List<Season>>

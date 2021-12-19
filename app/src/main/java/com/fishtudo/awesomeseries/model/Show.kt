@@ -10,7 +10,7 @@ data class Show(
     var name: String,
     var type: String,
     var language: String,
-    var image: Map<String, String>,
+    var image: Map<String, String>?,
     var summary: String,
     var schedule: Schedule,
     var genres: List<String>

@@ -1,7 +1,11 @@
 package com.fishtudo.awesomeseries.ui.activities
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -29,7 +33,34 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        handleIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
         setRecyclerViewUp()
+        if (Intent.ACTION_SEARCH == intent.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                requestSearchListItems(query)
+                return
+            }
+        }
+
+        requestDefaultListItems()
+    }
+
+    private fun requestSearchListItems(query: String) {
+        viewModel.searchShowsByPage(query).observe(this) { resource ->
+            resource?.data.let { list ->
+                list?.let {
+                    adapter.updateItems(it)
+                }
+            }
+        }
     }
 
     private fun setRecyclerViewUp() {
@@ -46,12 +77,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    override fun onResume() {
-        super.onResume()
-        requestListItems()
-    }
-
-    private fun requestListItems() {
+    private fun requestDefaultListItems() {
         viewModel.listShowsByPage(0).observe(this) { resource ->
             resource?.data.let { list ->
                 list?.let {
@@ -59,5 +85,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        (menu.findItem(R.id.search).actionView as SearchView).apply {
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        }
+        return true
     }
 }

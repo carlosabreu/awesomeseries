@@ -62,7 +62,9 @@ class ListShowAdapter(
         fun setShowItem(show: Show) {
             this.show = show
             itemView.seasonNumber.text = show.name
-            imageUtil.downloadImage(context, show.image, itemView.image)
+            show.image?.let {
+                imageUtil.downloadImage(context, it, itemView.image)
+            }
         }
     }
 }
