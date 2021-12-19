@@ -11,10 +11,23 @@ class ShowEntity : Serializable {
 
     @PrimaryKey
     var movieId = 0
+    var url = ""
+    var name = ""
+    var image = mapOf<String, String>()
+    var summary = ""
+    var scheduleTime = ""
+//    var scheduleDays = listOf("")
+
 
     companion object {
         fun createShowEntityFromShow(show: Show): ShowEntity = ShowEntity().apply {
             movieId = show.id
+            url = show.url
+            name = show.name
+            summary = show.summary
+            image = show.image ?: mapOf()
+            scheduleTime = show.schedule.time
+//            scheduleDays = show.schedule.days
         }
     }
 
@@ -24,10 +37,10 @@ class ShowEntity : Serializable {
 
     fun createShow() = Show(
         id = movieId,
-        url = "",
-        name = "String",
-        image = mapOf("" to ""),
-        summary = "",
+        url = this.url,
+        name = this.name,
+        image = this.image,
+        summary = this.summary,
         genres = listOf(""),
         schedule = Schedule(
             time = "",

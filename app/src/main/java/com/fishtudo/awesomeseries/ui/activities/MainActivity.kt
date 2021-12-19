@@ -185,6 +185,10 @@ class MainActivity : AppCompatActivity() {
                 startCreatePinActivity()
                 return true
             }
+            R.id.favorite -> {
+                startFavoriteListActivity()
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -198,6 +202,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun startCreatePinActivity() {
         val intent = Intent(this, CreateAPinActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun startFavoriteListActivity() {
+        val intent = Intent(this, FavoriteListActivity::class.java)
         startActivity(intent)
     }
 }

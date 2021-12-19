@@ -13,4 +13,10 @@
         android:icon="@drawable/ic_lock_white_24dp"
         android:title="@string/lock"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/favorite"
+        android:icon="@android:drawable/star_big_on"
+        android:title="@string/lock"
+        app:showAsAction="ifRoom" />
 </menu>
