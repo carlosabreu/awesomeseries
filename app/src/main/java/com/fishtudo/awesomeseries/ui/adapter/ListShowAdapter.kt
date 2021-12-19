@@ -13,7 +13,9 @@ import kotlinx.android.synthetic.main.show_item.view.*
 class ListShowAdapter(
     private val context: Context,
     private val showList: MutableList<Show> = mutableListOf(),
-    var onItemClickListener: (show: Show) -> Unit = {}
+    var onItemClickListener: (show: Show) -> Unit = {},
+    var onFavoriteItemClickListener: (show: Show) -> Unit = {},
+    var favoriteVerifier: ((show: Show, callback: (Boolean) -> Unit) -> Unit)? = null
 ) : RecyclerView.Adapter<ListShowAdapter.ViewHolder>() {
 
     private val imageUtil = ImageUtil()
@@ -43,10 +45,6 @@ class ListShowAdapter(
         notifyItemRangeInserted(0, this.showList.size)
     }
 
-    private fun onClickItem(show: Show) {
-        onItemClickListener(show)
-    }
-
     inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private lateinit var show: Show
@@ -54,7 +52,12 @@ class ListShowAdapter(
         init {
             itemView.setOnClickListener {
                 if (::show.isInitialized) {
-                    onClickItem(show)
+                    onItemClickListener(show)
+                }
+            }
+            itemView.favorite_star.setOnClickListener {
+                if (::show.isInitialized) {
+                    onFavoriteItemClickListener(show)
                 }
             }
         }
@@ -65,6 +68,16 @@ class ListShowAdapter(
             show.image?.let {
                 imageUtil.downloadImage(context, it, itemView.image)
             }
+
+            favoriteVerifier?.let {
+                it(show) {
+                    itemView.favorite_star.setImageResource(findImageResource(it))
+                }
+            }
         }
+
+        private fun findImageResource(boolean: Boolean) =
+            if (boolean) android.R.drawable.star_big_on
+            else android.R.drawable.star_big_off
     }
 }

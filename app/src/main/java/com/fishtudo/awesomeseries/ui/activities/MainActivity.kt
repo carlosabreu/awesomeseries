@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.fishtudo.awesomeseries.R
 import com.fishtudo.awesomeseries.model.Session
 import com.fishtudo.awesomeseries.model.Show
+import com.fishtudo.awesomeseries.repositories.FavoriteShowRepository
 import com.fishtudo.awesomeseries.repositories.PinRepository
 import com.fishtudo.awesomeseries.repositories.Resource
 import com.fishtudo.awesomeseries.repositories.TVMazeRepositoryFactory
@@ -27,6 +28,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private var searchView: SearchView? = null
+
+    private var favoriteShowRepository = FavoriteShowRepository()
 
     private val adapter by lazy {
         ListShowAdapter(context = this)
@@ -89,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun hideSearchInformation() {
         textView.visibility = View.GONE
         close_search.visibility = View.GONE
@@ -120,7 +122,14 @@ class MainActivity : AppCompatActivity() {
         recyclerview.adapter = adapter
         recyclerview.addItemDecoration(DividerItemDecoration(this, VERTICAL))
         adapter.onItemClickListener = this::onItemClicked
+        adapter.onFavoriteItemClickListener = this::onFavoriteItemClickListener
+        adapter.favoriteVerifier = this::favoriteVerifier
     }
+
+    private fun favoriteVerifier(show: Show, callback: (Boolean) -> Unit) =
+        favoriteShowRepository.isFavorite(this, show) {
+            callback(it)
+        }
 
     private fun onItemClicked(show: Show) {
         val bundle = Bundle()
@@ -161,6 +170,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun onFavoriteItemClickListener(show: Show) {
+        Toast.makeText(this, "${show.name} added to favorites", Toast.LENGTH_SHORT).show()
+        favoriteShowRepository.save(this, show)
     }
 
     private fun startCreatePinActivity() {
