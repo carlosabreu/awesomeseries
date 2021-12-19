@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
@@ -13,7 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.fishtudo.awesomeseries.R
+import com.fishtudo.awesomeseries.model.Session
 import com.fishtudo.awesomeseries.model.Show
+import com.fishtudo.awesomeseries.repositories.PinRepository
 import com.fishtudo.awesomeseries.repositories.Resource
 import com.fishtudo.awesomeseries.repositories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.adapter.ListShowAdapter
@@ -37,17 +40,33 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (stillLocked()) {
+            startUnlockActivity()
+            finish()
+        }
         setContentView(R.layout.activity_main)
+        setRecyclerViewUp()
         handleIntent(intent)
+    }
+
+    private fun startUnlockActivity() {
+        val intent = Intent(this, UnlockActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun stillLocked(): Boolean {
+        val logged = Session.logged
+        val userSetPassword = PinRepository().readPin(this) != ""
+        return !logged && userSetPassword
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setRecyclerViewUp()
         handleIntent(intent)
     }
 
     private fun handleIntent(intent: Intent) {
-        setRecyclerViewUp()
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 displaySearchInformation(query)
@@ -131,5 +150,21 @@ class MainActivity : AppCompatActivity() {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.create_pin -> {
+                startCreatePinActivity()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun startCreatePinActivity() {
+        val intent = Intent(this, CreateAPinActivity::class.java)
+        startActivity(intent)
     }
 }

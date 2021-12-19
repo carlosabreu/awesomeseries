@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Awesome Series</string>
     <string name="search_title">Search</string>
+    <string name="lock">Set a pin</string>
     <string name="search_hint">Search by name</string>
+    <string name="type_a_new_pin">Type a new Pin</string>
+    <string name="save_pin">Save Pin</string>
+    <string name="saved_pin">Pin successfully saved</string>
+    <string name="type_your_pin">Type your pin</string>
+    <string name="login">Login</string>
+    <string name="pin_invalid">Pin Invalid</string>
 </resources>
