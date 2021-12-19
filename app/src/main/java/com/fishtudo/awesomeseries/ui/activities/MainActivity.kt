@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.fishtudo.awesomeseries.R
 import com.fishtudo.awesomeseries.model.Show
 import com.fishtudo.awesomeseries.repositories.Resource
-import com.fishtudo.awesomeseries.repositories.TVMazeRepository
+import com.fishtudo.awesomeseries.repositories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.adapter.ListShowAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.ListShowViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListShowViewModelFactory
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val viewModel by lazy {
-        val repository = TVMazeRepository()
+        val repository = TVMazeRepositoryFactory().createRepository()
         val factory = ListShowViewModelFactory(repository)
         ViewModelProvider(this, factory)[ListShowViewModel::class.java]
     }

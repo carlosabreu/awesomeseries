@@ -6,26 +6,17 @@ import com.fishtudo.awesomeseries.model.Episode
 import com.fishtudo.awesomeseries.model.SearchResult
 import com.fishtudo.awesomeseries.model.Season
 import com.fishtudo.awesomeseries.model.Show
-import com.fishtudo.awesomeseries.util.TVMAZE_URL
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class TVMazeRepository {
+class TVMazeRepository(private val service: TvmazeApiInterface) {
 
     private val showLiveData = MutableLiveData<Resource<List<Show>>>()
 
     private val seasonLiveData = MutableLiveData<Resource<List<Season>>>()
 
     private val episodeLiveData = MutableLiveData<Resource<List<Episode>>>()
-
-    private val service: TvmazeApiInterface by lazy {
-        val retrofit: Retrofit = Retrofit.Builder().baseUrl(TVMAZE_URL)
-            .addConverterFactory(GsonConverterFactory.create()).build()
-        retrofit.create(TvmazeApiInterface::class.java)
-    }
 
     fun listShowsByPage(page: Int): LiveData<Resource<List<Show>>> {
         val call: Call<List<Show>> = service.listShows(page)

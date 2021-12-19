@@ -14,7 +14,7 @@ import com.fishtudo.awesomeseries.R
 import com.fishtudo.awesomeseries.model.Episode
 import com.fishtudo.awesomeseries.model.Season
 import com.fishtudo.awesomeseries.model.Show
-import com.fishtudo.awesomeseries.repositories.TVMazeRepository
+import com.fishtudo.awesomeseries.repositories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.adapter.EpisodeAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.ListEpisodeViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.ListSeasonViewModel
@@ -29,13 +29,13 @@ class ShowDetailsActivity : AppCompatActivity() {
     private val imageUtil = ImageUtil()
 
     private val seasonsViewModel by lazy {
-        val repository = TVMazeRepository()
+        val repository = TVMazeRepositoryFactory().createRepository()
         val factory = ShowDetailsViewModelFactory(repository)
         ViewModelProvider(this, factory)[ListSeasonViewModel::class.java]
     }
 
     private val episodesViewModel by lazy {
-        val repository = TVMazeRepository()
+        val repository = TVMazeRepositoryFactory().createRepository()
         val factory = EpisodeListViewModelFactory(repository)
         ViewModelProvider(this, factory)[ListEpisodeViewModel::class.java]
     }
