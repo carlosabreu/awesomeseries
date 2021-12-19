@@ -1,11 +1,11 @@
 package com.fishtudo.awesomeseries.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -121,12 +121,11 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private fun onItemClicked(episode: Episode) {
-//        val bundle = Bundle()
-//        bundle.putParcelable(PARAMETER_PARCELABLE_ITEM, show)
-//        val intent = Intent(this, ShowDetailsActivity::class.java)
-//        intent.putExtra(PARAMETER_BUNDLE, bundle)
-//        startActivity(intent)
+        val bundle = Bundle()
+        bundle.putParcelable(PARAMETER_PARCELABLE_ITEM, episode)
+        val intent = Intent(this, EpisodeDetailsActivity::class.java)
+        intent.putExtra(PARAMETER_BUNDLE, bundle)
+        startActivity(intent)
     }
-
 }
 

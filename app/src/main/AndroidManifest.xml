@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AwesomeSeries">
         <activity
+            android:name=".ui.activities.EpisodeDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.ShowDetailsActivity"
             android:exported="false" />
         <activity
