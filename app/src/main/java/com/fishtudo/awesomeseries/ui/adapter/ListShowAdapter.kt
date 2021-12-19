@@ -13,10 +13,11 @@ import kotlinx.android.synthetic.main.show_item.view.*
 class ListShowAdapter(
     private val context: Context,
     private val showList: MutableList<Show> = mutableListOf(),
-    var onItemClickListener: (show: Show) -> Unit = {},
-    var onFavoriteItemClickListener: (show: Show) -> Unit = {},
-    var favoriteVerifier: ((show: Show, callback: (Boolean) -> Unit) -> Unit)? = null
+    var onItemClickListener: (Show) -> Unit = {},
+    var onFavoriteItemClickListener: (Show, Boolean) -> Unit = { _, _ -> },
 ) : RecyclerView.Adapter<ListShowAdapter.ViewHolder>() {
+
+    private var favoriteList: ArrayList<Show> = ArrayList()
 
     private val imageUtil = ImageUtil()
 
@@ -45,6 +46,11 @@ class ListShowAdapter(
         notifyItemRangeInserted(0, this.showList.size)
     }
 
+    fun updateFavorites(favoriteList: List<Show>) {
+        this.favoriteList.clear()
+        this.favoriteList.addAll(favoriteList)
+    }
+
     inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private lateinit var show: Show
@@ -57,7 +63,14 @@ class ListShowAdapter(
             }
             itemView.favorite_star.setOnClickListener {
                 if (::show.isInitialized) {
-                    onFavoriteItemClickListener(show)
+                    val filter = favoriteList.filter { show.id == it.id }
+                    if (filter.isEmpty()) {
+                        favoriteList.add(show)
+                    } else {
+                        favoriteList.remove(filter[0])
+                    }
+                    updateFavoriteStars(show)
+                    onFavoriteItemClickListener(show, filter.isEmpty())
                 }
             }
         }
@@ -68,12 +81,15 @@ class ListShowAdapter(
             show.image?.let {
                 imageUtil.downloadImage(context, it, itemView.image)
             }
+            updateFavoriteStars(show)
+        }
 
-            favoriteVerifier?.let {
-                it(show) {
-                    itemView.favorite_star.setImageResource(findImageResource(it))
-                }
-            }
+        private fun updateFavoriteStars(show: Show) {
+            itemView.favorite_star.setImageResource(
+                findImageResource(
+                    favoriteList.any { show.id == it.id }
+                )
+            )
         }
 
         private fun findImageResource(boolean: Boolean) =

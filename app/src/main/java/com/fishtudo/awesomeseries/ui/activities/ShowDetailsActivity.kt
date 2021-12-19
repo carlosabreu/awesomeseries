@@ -14,7 +14,7 @@ import com.fishtudo.awesomeseries.R
 import com.fishtudo.awesomeseries.model.Episode
 import com.fishtudo.awesomeseries.model.Season
 import com.fishtudo.awesomeseries.model.Show
-import com.fishtudo.awesomeseries.repositories.TVMazeRepositoryFactory
+import com.fishtudo.awesomeseries.repositories.factories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.adapter.EpisodeAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.ListEpisodeViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.ListSeasonViewModel

@@ -19,9 +19,11 @@ import com.fishtudo.awesomeseries.model.Show
 import com.fishtudo.awesomeseries.repositories.FavoriteShowRepository
 import com.fishtudo.awesomeseries.repositories.PinRepository
 import com.fishtudo.awesomeseries.repositories.Resource
-import com.fishtudo.awesomeseries.repositories.TVMazeRepositoryFactory
+import com.fishtudo.awesomeseries.repositories.factories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.adapter.ListShowAdapter
+import com.fishtudo.awesomeseries.ui.viewmodel.FavoriteShowViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.ListShowViewModel
+import com.fishtudo.awesomeseries.ui.viewmodel.factory.FavoriteShowViewModelFactory
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListShowViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -29,16 +31,20 @@ class MainActivity : AppCompatActivity() {
 
     private var searchView: SearchView? = null
 
-    private var favoriteShowRepository = FavoriteShowRepository()
-
     private val adapter by lazy {
         ListShowAdapter(context = this)
     }
 
-    private val viewModel by lazy {
+    private val listShowViewModel by lazy {
         val repository = TVMazeRepositoryFactory().createRepository()
         val factory = ListShowViewModelFactory(repository)
         ViewModelProvider(this, factory)[ListShowViewModel::class.java]
+    }
+
+    private val favoritesViewModel by lazy {
+        val repository = FavoriteShowRepository()
+        val factory = FavoriteShowViewModelFactory(repository)
+        ViewModelProvider(this, factory)[FavoriteShowViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setRecyclerViewUp()
         handleIntent(intent)
+        loadFavorites()
     }
 
     private fun startUnlockActivity() {
@@ -98,7 +105,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestSearchListItems(query: String) {
-        viewModel.searchShowsByPage(query).observe(this) { resource ->
+        listShowViewModel.searchShowsByPage(query).observe(this) { resource ->
             onResultReceived(resource)
         }
     }
@@ -114,6 +121,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun onFavoritesUpdate(resource: Resource<List<Show>>) {
+        if (resource.error != null) {
+            showError(resource.error)
+            return
+        }
+
+        resource.data?.let {
+            adapter.updateFavorites(it)
+        }
+    }
+
     private fun showError(error: String) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
@@ -123,13 +141,7 @@ class MainActivity : AppCompatActivity() {
         recyclerview.addItemDecoration(DividerItemDecoration(this, VERTICAL))
         adapter.onItemClickListener = this::onItemClicked
         adapter.onFavoriteItemClickListener = this::onFavoriteItemClickListener
-        adapter.favoriteVerifier = this::favoriteVerifier
     }
-
-    private fun favoriteVerifier(show: Show, callback: (Boolean) -> Unit) =
-        favoriteShowRepository.isFavorite(this, show) {
-            callback(it)
-        }
 
     private fun onItemClicked(show: Show) {
         val bundle = Bundle()
@@ -140,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDefaultListItems() {
-        viewModel.listShowsByPage(0).observe(this) { resource ->
+        listShowViewModel.listShowsByPage(0).observe(this) { resource ->
             onResultReceived(resource)
         }
     }
@@ -149,6 +161,12 @@ class MainActivity : AppCompatActivity() {
         searchView?.onActionViewCollapsed()
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun loadFavorites() {
+        favoritesViewModel.listFavorites(this).observe(this) { resource ->
+            onFavoritesUpdate(resource)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -172,9 +190,10 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onFavoriteItemClickListener(show: Show) {
-        Toast.makeText(this, "${show.name} added to favorites", Toast.LENGTH_SHORT).show()
-        favoriteShowRepository.save(this, show)
+    private fun onFavoriteItemClickListener(show: Show, inserted: Boolean) {
+        val message = if (inserted) "added to" else "removed from"
+        Toast.makeText(this, "${show.name} $message favorites", Toast.LENGTH_SHORT).show()
+        favoritesViewModel.changeFavoritesStatus(this, show)
     }
 
     private fun startCreatePinActivity() {

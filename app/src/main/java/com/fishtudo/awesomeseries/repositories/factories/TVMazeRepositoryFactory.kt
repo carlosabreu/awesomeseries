@@ -1,5 +1,7 @@
-package com.fishtudo.awesomeseries.repositories
+package com.fishtudo.awesomeseries.repositories.factories
 
+import com.fishtudo.awesomeseries.repositories.TVMazeRepository
+import com.fishtudo.awesomeseries.repositories.TvmazeApiInterface
 import com.fishtudo.awesomeseries.util.TVMAZE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

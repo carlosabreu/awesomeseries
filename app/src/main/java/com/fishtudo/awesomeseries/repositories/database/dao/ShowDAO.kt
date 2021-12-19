@@ -1,6 +1,7 @@
 package com.fishtudo.awesomeseries.repositories.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.fishtudo.awesomeseries.repositories.database.entity.ShowEntity
@@ -14,4 +15,6 @@ interface ShowDAO {
     @Query("SELECT * FROM ShowEntity")
     fun listAll(): List<ShowEntity?>?
 
+    @Delete
+    fun delete(show: ShowEntity?)
 }
