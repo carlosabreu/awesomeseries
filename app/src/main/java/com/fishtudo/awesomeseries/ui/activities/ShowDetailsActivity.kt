@@ -23,7 +23,6 @@ import com.fishtudo.awesomeseries.ui.viewmodel.factory.ShowDetailsViewModelFacto
 import com.fishtudo.awesomeseries.util.ImageUtil
 import kotlinx.android.synthetic.main.activity_show_details.*
 
-
 class ShowDetailsActivity : AppCompatActivity() {
 
     private val imageUtil = ImageUtil()
@@ -87,6 +86,7 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private fun configureSpinner(list: List<Season>) {
+        spinner.visibility = View.VISIBLE
         spinner.adapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
                 list.map {
@@ -109,13 +109,14 @@ class ShowDetailsActivity : AppCompatActivity() {
                 return
             }
         }
-
     }
 
     private fun requestEpisodeList(season: Season) {
         episodesViewModel.listEpisodeBySeason(season.id).observe(this) { resource ->
             resource?.data.let { list ->
                 list?.let {
+                    recyclerview.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
                     adapter.updateItems(it)
                 }
             }
