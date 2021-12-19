@@ -28,7 +28,6 @@ class BiometryManager {
         biometricPrompt.authenticate(promptInfo)
     }
 
-
     fun appCanAuthenticateWithBiometry(context: Context): Boolean =
         deviceHasBiometryEnabled(context) == BiometricManager.BIOMETRIC_SUCCESS
 
