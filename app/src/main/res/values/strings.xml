@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Awesome Series</string>
     <string name="search_title">Search</string>
-    <string name="search_hint">Type to search</string>
+    <string name="search_hint">Search by name</string>
 </resources>
