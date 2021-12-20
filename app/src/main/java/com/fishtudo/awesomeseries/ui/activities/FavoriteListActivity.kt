@@ -2,6 +2,7 @@ package com.fishtudo.awesomeseries.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -14,7 +15,9 @@ import com.fishtudo.awesomeseries.repositories.Resource
 import com.fishtudo.awesomeseries.ui.adapter.FavoriteShowAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.FavoriteShowViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.FavoriteShowViewModelFactory
+import kotlinx.android.synthetic.main.activity_favorite_list.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.recyclerview
 
 class FavoriteListActivity : AppCompatActivity() {
 
@@ -56,12 +59,16 @@ class FavoriteListActivity : AppCompatActivity() {
     }
 
     private fun onResultReceived(resource: Resource<List<Show>>) {
+        progressBar.visibility = View.GONE
         if (resource.error != null) {
             showError(resource.error)
             return
         }
 
         resource.data?.let { unsortedList ->
+            if (unsortedList.isEmpty()) {
+                no_favorites.visibility = View.VISIBLE
+            }
             adapter.updateItems(unsortedList.sortedBy { it.name })
         }
     }
