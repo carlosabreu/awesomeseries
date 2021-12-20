@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AwesomeSeries">
         <activity
+            android:name=".ui.activities.CastCreditsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.PeopleSearchActivity"
             android:exported="false" />
         <activity

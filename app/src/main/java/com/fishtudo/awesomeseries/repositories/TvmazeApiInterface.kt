@@ -23,4 +23,7 @@ interface TvmazeApiInterface {
 
     @GET(PEOPLE_LIST)
     fun listPeople(): Call<List<People>>
+
+    @GET(CAST_CREDITS)
+    fun listCastCredits(@Path("personId") personId: Int): Call<List<CastCredits>>
 }

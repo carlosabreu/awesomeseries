@@ -8,14 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.fishtudo.awesomeseries.R
 import com.fishtudo.awesomeseries.model.People
 import com.fishtudo.awesomeseries.util.ImageUtil
-import kotlinx.android.synthetic.main.activity_episode_details.view.*
-import kotlinx.android.synthetic.main.activity_episode_details.view.name
 import kotlinx.android.synthetic.main.people_item.view.*
 
 class PeopleAdapter(
     private val context: Context,
     private val peopleList: MutableList<People> = mutableListOf(),
-    var onItemClickListener: (show: People) -> Unit = {}
+    var onItemClickListener: (people: People) -> Unit = {}
 ) : RecyclerView.Adapter<PeopleAdapter.ViewHolder>() {
 
     private val imageUtil = ImageUtil()
@@ -38,10 +36,10 @@ class PeopleAdapter(
         return peopleList.size
     }
 
-    fun updateItems(showList: List<People>) {
+    fun updateItems(peopleList: List<People>) {
         notifyItemRangeRemoved(0, this.peopleList.size)
         this.peopleList.clear()
-        this.peopleList.addAll(showList)
+        this.peopleList.addAll(peopleList)
         notifyItemRangeInserted(0, this.peopleList.size)
     }
 

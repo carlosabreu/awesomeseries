@@ -17,6 +17,8 @@ class TVMazeRepository(private val service: TvmazeApiInterface) {
 
     private val peopleLiveData = MutableLiveData<Resource<List<People>>>()
 
+    private val castCreditsLiveData = MutableLiveData<Resource<List<CastCredits>>>()
+
     fun listShowsByPage(page: Int): LiveData<Resource<List<Show>>> {
         val call: Call<List<Show>> = service.listShows(page)
         call.enqueue(object : Callback<List<Show>> {
@@ -91,5 +93,22 @@ class TVMazeRepository(private val service: TvmazeApiInterface) {
             }
         })
         return peopleLiveData
+    }
+
+    fun listCastCredits(id: Int): LiveData<Resource<List<CastCredits>>> {
+        val call: Call<List<CastCredits>> = service.listCastCredits(id)
+        call.enqueue(object : Callback<List<CastCredits>> {
+            override fun onResponse(
+                call: Call<List<CastCredits>>,
+                response: Response<List<CastCredits>>
+            ) {
+                castCreditsLiveData.value = Resource(response.body())
+            }
+
+            override fun onFailure(call: Call<List<CastCredits>>, t: Throwable) {
+                castCreditsLiveData.value = Resource(error = "Conection Error", data = null)
+            }
+        })
+        return castCreditsLiveData
     }
 }
