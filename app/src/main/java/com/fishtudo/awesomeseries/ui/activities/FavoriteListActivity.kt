@@ -13,8 +13,8 @@ import com.fishtudo.awesomeseries.model.Show
 import com.fishtudo.awesomeseries.repositories.FavoriteShowRepository
 import com.fishtudo.awesomeseries.repositories.Resource
 import com.fishtudo.awesomeseries.ui.adapter.FavoriteShowAdapter
-import com.fishtudo.awesomeseries.ui.viewmodel.FavoriteShowViewModel
-import com.fishtudo.awesomeseries.ui.viewmodel.factory.FavoriteShowViewModelFactory
+import com.fishtudo.awesomeseries.ui.viewmodel.ListFavoriteViewModel
+import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListFavoriteViewModelFactory
 import kotlinx.android.synthetic.main.activity_favorite_list.*
 import kotlinx.android.synthetic.main.activity_main.recyclerview
 
@@ -26,8 +26,8 @@ class FavoriteListActivity : AppCompatActivity() {
 
     private val favoritesViewModel by lazy {
         val repository = FavoriteShowRepository()
-        val factory = FavoriteShowViewModelFactory(repository)
-        ViewModelProvider(this, factory)[FavoriteShowViewModel::class.java]
+        val factory = ListFavoriteViewModelFactory(repository)
+        ViewModelProvider(this, factory)[ListFavoriteViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

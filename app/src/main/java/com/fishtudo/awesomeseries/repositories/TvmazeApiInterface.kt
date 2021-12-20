@@ -1,13 +1,7 @@
 package com.fishtudo.awesomeseries.repositories
 
-import com.fishtudo.awesomeseries.model.Episode
-import com.fishtudo.awesomeseries.model.SearchResult
-import com.fishtudo.awesomeseries.model.Season
-import com.fishtudo.awesomeseries.model.Show
-import com.fishtudo.awesomeseries.util.EPISODES_LIST
-import com.fishtudo.awesomeseries.util.SEARCH_SHOW
-import com.fishtudo.awesomeseries.util.SEASONS_LIST
-import com.fishtudo.awesomeseries.util.SHOW_LIST
+import com.fishtudo.awesomeseries.model.*
+import com.fishtudo.awesomeseries.util.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -26,4 +20,7 @@ interface TvmazeApiInterface {
 
     @GET(EPISODES_LIST)
     fun listEpisodes(@Path("seasonId") seasonId: Int): Call<List<Episode>>
+
+    @GET(PEOPLE_LIST)
+    fun listPeople(): Call<List<People>>
 }

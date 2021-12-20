@@ -7,7 +7,7 @@ import com.fishtudo.awesomeseries.model.Show
 import com.fishtudo.awesomeseries.repositories.FavoriteShowRepository
 import com.fishtudo.awesomeseries.repositories.Resource
 
-class FavoriteShowViewModel(
+class ListFavoriteViewModel(
     private val repository: FavoriteShowRepository
 ) : ViewModel() {
 

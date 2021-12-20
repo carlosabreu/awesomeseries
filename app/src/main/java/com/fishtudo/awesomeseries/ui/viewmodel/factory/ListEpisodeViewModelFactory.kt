@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.fishtudo.awesomeseries.repositories.TVMazeRepository
 import com.fishtudo.awesomeseries.ui.viewmodel.ListEpisodeViewModel
 
-class EpisodeListViewModelFactory(
+class ListEpisodeViewModelFactory(
     private val repository: TVMazeRepository
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")

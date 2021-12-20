@@ -9,14 +9,20 @@
         app:showAsAction="collapseActionView|ifRoom" />
 
     <item
-        android:id="@+id/create_pin"
-        android:icon="@drawable/ic_lock_white_24dp"
-        android:title="@string/lock"
+        android:id="@+id/favorite"
+        android:icon="@android:drawable/star_big_on"
+        android:title="@string/favorite"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/favorite"
-        android:icon="@android:drawable/star_big_on"
+        android:id="@+id/people_search"
+        android:icon="@drawable/ic_face_white_24dp"
+        android:title="@string/people_search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/create_pin"
+        android:icon="@drawable/ic_lock_white_24dp"
         android:title="@string/lock"
         app:showAsAction="ifRoom" />
 </menu>

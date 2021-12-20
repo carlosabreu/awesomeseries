@@ -18,8 +18,8 @@ import com.fishtudo.awesomeseries.repositories.factories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.adapter.EpisodeAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.ListEpisodeViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.ListSeasonViewModel
-import com.fishtudo.awesomeseries.ui.viewmodel.factory.EpisodeListViewModelFactory
-import com.fishtudo.awesomeseries.ui.viewmodel.factory.ShowDetailsViewModelFactory
+import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListEpisodeViewModelFactory
+import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListSeasonViewModelFactory
 import com.fishtudo.awesomeseries.util.ImageUtil
 import kotlinx.android.synthetic.main.activity_show_details.*
 
@@ -29,13 +29,13 @@ class ShowDetailsActivity : AppCompatActivity() {
 
     private val seasonsViewModel by lazy {
         val repository = TVMazeRepositoryFactory().createRepository()
-        val factory = ShowDetailsViewModelFactory(repository)
+        val factory = ListSeasonViewModelFactory(repository)
         ViewModelProvider(this, factory)[ListSeasonViewModel::class.java]
     }
 
     private val episodesViewModel by lazy {
         val repository = TVMazeRepositoryFactory().createRepository()
-        val factory = EpisodeListViewModelFactory(repository)
+        val factory = ListEpisodeViewModelFactory(repository)
         ViewModelProvider(this, factory)[ListEpisodeViewModel::class.java]
     }
 

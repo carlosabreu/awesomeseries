@@ -21,9 +21,9 @@ import com.fishtudo.awesomeseries.repositories.PinRepository
 import com.fishtudo.awesomeseries.repositories.Resource
 import com.fishtudo.awesomeseries.repositories.factories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.adapter.ListShowAdapter
-import com.fishtudo.awesomeseries.ui.viewmodel.FavoriteShowViewModel
+import com.fishtudo.awesomeseries.ui.viewmodel.ListFavoriteViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.ListShowViewModel
-import com.fishtudo.awesomeseries.ui.viewmodel.factory.FavoriteShowViewModelFactory
+import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListFavoriteViewModelFactory
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListShowViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
 
     private val favoritesViewModel by lazy {
         val repository = FavoriteShowRepository()
-        val factory = FavoriteShowViewModelFactory(repository)
-        ViewModelProvider(this, factory)[FavoriteShowViewModel::class.java]
+        val factory = ListFavoriteViewModelFactory(repository)
+        ViewModelProvider(this, factory)[ListFavoriteViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -190,6 +190,10 @@ class MainActivity : AppCompatActivity() {
                 startFavoriteListActivity()
                 return true
             }
+            R.id.people_search -> {
+                startPeopleSearchActivity()
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -208,6 +212,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun startFavoriteListActivity() {
         val intent = Intent(this, FavoriteListActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun startPeopleSearchActivity() {
+        val intent = Intent(this, PeopleSearchActivity::class.java)
         startActivity(intent)
     }
 }

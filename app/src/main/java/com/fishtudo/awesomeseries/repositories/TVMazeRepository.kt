@@ -2,10 +2,7 @@ package com.fishtudo.awesomeseries.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.fishtudo.awesomeseries.model.Episode
-import com.fishtudo.awesomeseries.model.SearchResult
-import com.fishtudo.awesomeseries.model.Season
-import com.fishtudo.awesomeseries.model.Show
+import com.fishtudo.awesomeseries.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,6 +14,8 @@ class TVMazeRepository(private val service: TvmazeApiInterface) {
     private val seasonLiveData = MutableLiveData<Resource<List<Season>>>()
 
     private val episodeLiveData = MutableLiveData<Resource<List<Episode>>>()
+
+    private val peopleLiveData = MutableLiveData<Resource<List<People>>>()
 
     fun listShowsByPage(page: Int): LiveData<Resource<List<Show>>> {
         val call: Call<List<Show>> = service.listShows(page)
@@ -78,5 +77,19 @@ class TVMazeRepository(private val service: TvmazeApiInterface) {
             }
         })
         return episodeLiveData
+    }
+
+    fun listPeople(): LiveData<Resource<List<People>>> {
+        val call: Call<List<People>> = service.listPeople()
+        call.enqueue(object : Callback<List<People>> {
+            override fun onResponse(call: Call<List<People>>, response: Response<List<People>>) {
+                peopleLiveData.value = Resource(response.body())
+            }
+
+            override fun onFailure(call: Call<List<People>>, t: Throwable) {
+                peopleLiveData.value = Resource(error = "Conection Error", data = null)
+            }
+        })
+        return peopleLiveData
     }
 }
