@@ -111,6 +111,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onResultReceived(resource: Resource<List<Show>>) {
+        progressBar.visibility = View.GONE
         if (resource.error != null) {
             showError(resource.error)
             return

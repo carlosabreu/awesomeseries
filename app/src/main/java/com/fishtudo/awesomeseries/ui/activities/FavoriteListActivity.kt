@@ -16,7 +16,6 @@ import com.fishtudo.awesomeseries.ui.adapter.FavoriteShowAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.FavoriteShowViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.FavoriteShowViewModelFactory
 import kotlinx.android.synthetic.main.activity_favorite_list.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.recyclerview
 
 class FavoriteListActivity : AppCompatActivity() {
