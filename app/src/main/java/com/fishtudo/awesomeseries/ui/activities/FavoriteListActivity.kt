@@ -61,8 +61,8 @@ class FavoriteListActivity : AppCompatActivity() {
             return
         }
 
-        resource.data?.let {
-            adapter.updateItems(it)
+        resource.data?.let { unsortedList ->
+            adapter.updateItems(unsortedList.sortedBy { it.name })
         }
     }
 
