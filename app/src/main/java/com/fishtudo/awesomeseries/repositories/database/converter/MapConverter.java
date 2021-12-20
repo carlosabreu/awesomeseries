@@ -5,7 +5,7 @@ import androidx.room.TypeConverter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImageConverter {
+public class MapConverter {
 
     String KEY_DIVIDER = ":::";
 

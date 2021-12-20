@@ -16,8 +16,8 @@ class ShowEntity : Serializable {
     var image = mapOf<String, String>()
     var summary = ""
     var scheduleTime = ""
-//    var scheduleDays = listOf("")
-
+    var scheduleDays = listOf("")
+    var genres = listOf("")
 
     companion object {
         fun createShowEntityFromShow(show: Show): ShowEntity = ShowEntity().apply {
@@ -27,7 +27,8 @@ class ShowEntity : Serializable {
             summary = show.summary
             image = show.image ?: mapOf()
             scheduleTime = show.schedule.time
-//            scheduleDays = show.schedule.days
+            scheduleDays = show.schedule.days
+            genres = show.genres
         }
     }
 
@@ -41,10 +42,10 @@ class ShowEntity : Serializable {
         name = this.name,
         image = this.image,
         summary = this.summary,
-        genres = listOf(""),
+        genres = this.genres,
         schedule = Schedule(
-            time = "",
-            days = listOf("")
+            time = this.scheduleTime,
+            days = this.scheduleDays
         )
     )
 }
