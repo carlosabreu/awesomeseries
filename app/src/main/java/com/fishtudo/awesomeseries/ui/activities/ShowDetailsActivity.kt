@@ -53,7 +53,7 @@ class ShowDetailsActivity : AppCompatActivity() {
             seasonNumber.text = it.name
             days_in_air.text = it.schedule.days.joinToString()
             time_in_air.text = it.schedule.time
-            genres.text = it.genres[0]
+            genres.text = if (it.genres.isEmpty()) "" else it.genres[0]
             summary.text = Html.fromHtml(it.summary, Html.FROM_HTML_MODE_COMPACT)
             it.image?.let { image ->
                 imageUtil.downloadImage(this, image, poster)
