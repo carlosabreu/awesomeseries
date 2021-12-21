@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.fishtudo.awesomeseries.R
 import com.fishtudo.awesomeseries.model.CastCredits
+import com.fishtudo.awesomeseries.model.Show
 import kotlinx.android.synthetic.main.cast_credits_item.view.*
 
 class CastCreditsAdapter(
     private val context: Context,
-    private val castCredits: MutableList<CastCredits> = mutableListOf(),
-    var onItemClickListener: (castCredits: CastCredits) -> Unit = {}
+    private val data: MutableList<ShowWrapper> = mutableListOf(),
+    var showInfoSolicitor: (showId: List<Int>, callback: (Show) -> Unit) -> Unit = { _, _ -> },
+    var onItemClickListener: (show: Show) -> Unit = {}
 ) : RecyclerView.Adapter<CastCreditsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,39 +28,66 @@ class CastCreditsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setItem(castCredits[position])
+        holder.setItem(data[position])
     }
 
     override fun getItemCount(): Int {
-        return castCredits.size
+        return data.size
     }
 
     fun updateItems(castCredits: List<CastCredits>) {
-        notifyItemRangeRemoved(0, this.castCredits.size)
-        this.castCredits.clear()
-        this.castCredits.addAll(castCredits)
-        notifyItemRangeInserted(0, this.castCredits.size)
+        val separateShowIds = separateShowIds(castCredits)
+        notifyItemRangeRemoved(0, this.data.size)
+        this.data.clear()
+        this.data.addAll(separateShowIds.map { ShowWrapper(id = it) })
+        requestShows(separateShowIds)
+        notifyItemRangeInserted(0, this.data.size)
     }
 
-    private fun onClickItem(castCredits: CastCredits) {
-        onItemClickListener(castCredits)
+    private fun requestShows(separateShowIds: List<Int>) {
+        showInfoSolicitor(separateShowIds) { show ->
+            updateData(show)
+        }
     }
+
+    private fun updateData(show: Show) {
+        val items = data.filter { it.id == show.id }
+        if (items.isNotEmpty()) {
+            val index = data.indexOf(items[0])
+            notifyItemRemoved(index)
+            data[index] = ShowWrapper(show.id, show)
+            notifyItemInserted(index)
+        }
+    }
+
+    private fun separateShowIds(castCredits: List<CastCredits>) =
+        castCredits.map { it.getUrl().split("/").last().toInt() }
 
     inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        private lateinit var castCredits: CastCredits
+        private lateinit var showWrapper: ShowWrapper
 
         init {
             itemView.setOnClickListener {
-                if (::castCredits.isInitialized) {
-                    onClickItem(castCredits)
+                if (::showWrapper.isInitialized) {
+                    showWrapper.show?.let {
+                        onItemClickListener(it)
+                    }
                 }
             }
         }
 
-        fun setItem(castCredits: CastCredits) {
-            this.castCredits = castCredits
-            itemView.name.text = castCredits.getUrl()
+        fun setItem(showWrapper: ShowWrapper) {
+            this.showWrapper = showWrapper
+            if (showWrapper.show != null) {
+                itemView.name.text = showWrapper.show.name
+                itemView.progressBar.visibility = View.GONE
+            } else {
+                itemView.name.text = ""
+                itemView.progressBar.visibility = View.VISIBLE
+            }
         }
     }
+
+    inner class ShowWrapper(val id: Int, val show: Show? = null)
 }

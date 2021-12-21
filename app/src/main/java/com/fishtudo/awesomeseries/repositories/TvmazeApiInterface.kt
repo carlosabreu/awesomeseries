@@ -12,6 +12,9 @@ interface TvmazeApiInterface {
     @GET(SHOW_LIST)
     fun listShows(@Query("page") page: Int): Call<List<Show>>
 
+    @GET(SINGLE_SHOW)
+    fun singleShow(@Path("showId") showId: Int): Call<Show>
+
     @GET(SEARCH_SHOW)
     fun searchShows(@Query("q") searchParameter: String): Call<List<SearchResult>>
 

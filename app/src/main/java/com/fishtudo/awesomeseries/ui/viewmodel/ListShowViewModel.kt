@@ -17,4 +17,8 @@ class ListShowViewModel(
     fun searchShowsByPage(term: String): LiveData<Resource<List<Show>>> {
         return repository.searchShow(term)
     }
+
+    fun requireShowById(ids: List<Int>): LiveData<Resource<Show>> {
+        return repository.requireShowById(ids)
+    }
 }

@@ -1,6 +1,7 @@
 package com.fishtudo.awesomeseries.util
 
 const val TVMAZE_URL = "https://api.tvmaze.com"
+const val SINGLE_SHOW = "shows/{showId}"
 const val SHOW_LIST = "shows"
 const val SEARCH_SHOW = "/search/shows"
 const val SEASONS_LIST = "shows/{showId}/seasons"

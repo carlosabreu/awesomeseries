@@ -11,6 +11,8 @@ class TVMazeRepository(private val service: TvmazeApiInterface) {
 
     private val showLiveData = MutableLiveData<Resource<List<Show>>>()
 
+    private val singleShowLiveData = MutableLiveData<Resource<Show>>()
+
     private val seasonLiveData = MutableLiveData<Resource<List<Season>>>()
 
     private val episodeLiveData = MutableLiveData<Resource<List<Episode>>>()
@@ -31,6 +33,26 @@ class TVMazeRepository(private val service: TvmazeApiInterface) {
             }
         })
         return showLiveData
+    }
+
+    fun requireShowById(id: List<Int>): LiveData<Resource<Show>> {
+        id.forEach {
+            callSingShow(it)
+        }
+        return singleShowLiveData
+    }
+
+    private fun callSingShow(id: Int) {
+        val call: Call<Show> = service.singleShow(id)
+        call.enqueue(object : Callback<Show> {
+            override fun onResponse(call: Call<Show>, response: Response<Show>) {
+                singleShowLiveData.value = Resource(response.body())
+            }
+
+            override fun onFailure(call: Call<Show>, t: Throwable) {
+                singleShowLiveData.value = Resource(null, "Unable to connect to server")
+            }
+        })
     }
 
     fun searchShow(term: String): LiveData<Resource<List<Show>>> {

@@ -14,4 +14,5 @@
     <string name="login">Login</string>
     <string name="pin_invalid">Pin Invalid</string>
     <string name="you_don_t_have_any_favorite_series">You don\'t have any favorite series</string>
+    <string name="series">Series</string>
 </resources>
