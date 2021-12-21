@@ -20,7 +20,7 @@ class EpisodeDetailsActivity : AppCompatActivity() {
             "${episode.number}. ${episode.name}".also { name.text = it }
             "Season ${episode.season}".also { season.text = it }
             summary.text = Html.fromHtml(episode.summary, Html.FROM_HTML_MODE_COMPACT)
-            imageUtil.downloadImage(this, episode.image, poster)
+            episode.image?.let { imageUtil.downloadImage(this, it, poster) }
         }
     }
 

@@ -8,6 +8,6 @@ data class Episode(
     var number: String,
     var name: String,
     var season: String,
-    var image: Map<String, String>,
+    var image: Map<String, String>?,
     var summary: String,
 ) : Parcelable
