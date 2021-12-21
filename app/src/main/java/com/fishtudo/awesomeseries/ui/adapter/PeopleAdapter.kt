@@ -62,7 +62,7 @@ class PeopleAdapter(
         fun setItem(people: People) {
             this.people = people
             itemView.name.text = people.name
-            imageUtil.downloadImage(context, people.image, itemView.image)
+            people.image?.let { imageUtil.downloadImage(context, it, itemView.image) }
         }
     }
 }

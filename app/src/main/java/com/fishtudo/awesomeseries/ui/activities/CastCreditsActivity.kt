@@ -41,9 +41,9 @@ class CastCreditsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_cast_credits)
         requestCastCreditsList()
         setRecyclerViewUp()
-        findShowInIntent()?.let {
-            name.text = it.name
-            imageUtil.downloadImage(this, it.image, image)
+        findShowInIntent()?.let { people ->
+            name.text = people.name
+            people.image?.let { peopleImage -> imageUtil.downloadImage(this, peopleImage, image) }
         }
     }
 

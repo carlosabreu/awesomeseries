@@ -7,5 +7,5 @@ import kotlinx.android.parcel.Parcelize
 data class People(
     var id: Int,
     var name: String,
-    var image: Map<String, String>,
+    var image: Map<String, String>?,
 ) : Parcelable
