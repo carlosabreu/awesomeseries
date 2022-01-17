@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.fishtudo.awesomeseries.R
 import com.fishtudo.awesomeseries.model.Session
@@ -20,6 +21,7 @@ import com.fishtudo.awesomeseries.repositories.FavoriteShowRepository
 import com.fishtudo.awesomeseries.repositories.PinRepository
 import com.fishtudo.awesomeseries.repositories.Resource
 import com.fishtudo.awesomeseries.repositories.factories.TVMazeRepositoryFactory
+import com.fishtudo.awesomeseries.ui.PaginationListener
 import com.fishtudo.awesomeseries.ui.adapter.ListShowAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.ListFavoriteViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.ListShowViewModel
@@ -30,6 +32,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private var searchView: SearchView? = null
+
+    private var currentPage = 0
+
+    private var loading = false
 
     private val adapter by lazy {
         ListShowAdapter(context = this)
@@ -86,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         hideSearchInformation()
-        requestDefaultListItems()
+        requestDefaultListItems(0)
     }
 
     private fun displaySearchInformation(query: String) {
@@ -111,6 +117,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onResultReceived(resource: Resource<List<Show>>) {
+        loading = false
         progressBar.visibility = View.GONE
         if (resource.error != null) {
             showError(resource.error)
@@ -118,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         resource.data?.let {
-            adapter.updateItems(it)
+            adapter.addItems(it)
         }
     }
 
@@ -138,8 +145,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setRecyclerViewUp() {
+        val paginationListener: PaginationListener =
+            object : PaginationListener(recyclerview.layoutManager as LinearLayoutManager) {
+                override fun loadMoreItems() {
+                    requestDefaultListItems(++currentPage)
+                }
+
+                override val isLastPage: Boolean = false
+                override val isLoading: Boolean = loading
+            }
         recyclerview.adapter = adapter
         recyclerview.addItemDecoration(DividerItemDecoration(this, VERTICAL))
+        recyclerview.addOnScrollListener(paginationListener)
         adapter.onItemClickListener = this::onItemClicked
         adapter.onFavoriteItemClickListener = this::onFavoriteItemClickListener
     }
@@ -152,8 +169,9 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun requestDefaultListItems() {
-        listShowViewModel.listShowsByPage(0).observe(this) { resource ->
+    private fun requestDefaultListItems(page: Int) {
+        loading = true
+        listShowViewModel.listShowsByPage(page).observe(this) { resource ->
             onResultReceived(resource)
         }
     }

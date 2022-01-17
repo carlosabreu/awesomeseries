@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.show_item.view.*
 
 class ListShowAdapter(
     private val context: Context,
-    private val showList: MutableList<Show> = mutableListOf(),
+    private var showList: MutableList<Show> = mutableListOf(),
     var onItemClickListener: (Show) -> Unit = {},
     var onFavoriteItemClickListener: (Show, Boolean) -> Unit = { _, _ -> },
 ) : RecyclerView.Adapter<ListShowAdapter.ViewHolder>() {
@@ -39,11 +39,16 @@ class ListShowAdapter(
         return showList.size
     }
 
-    fun updateItems(showList: List<Show>) {
+    fun addItems(showList: List<Show>) {
+        val previousSize = this.showList.size
+        this.showList.addAll(showList)
+        this.showList = this.showList.toSet().toMutableList()
+        notifyItemRangeInserted(previousSize, this.showList.size)
+    }
+
+    fun clear() {
         notifyItemRangeRemoved(0, this.showList.size)
         this.showList.clear()
-        this.showList.addAll(showList)
-        notifyItemRangeInserted(0, this.showList.size)
     }
 
     fun updateFavorites(favoriteList: List<Show>) {
