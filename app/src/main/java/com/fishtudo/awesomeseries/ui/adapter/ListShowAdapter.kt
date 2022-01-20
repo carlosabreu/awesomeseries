@@ -40,15 +40,13 @@ class ListShowAdapter(
     }
 
     fun addItems(newShows: List<Show>) {
-        val previousSize = this.showList.size
-
         for (show in newShows) {
             if (!showList.contains(show)) {
                 showList.add(show)
             }
         }
 
-        notifyItemRangeInserted(previousSize, showList.size - previousSize)
+        notifyDataSetChanged()
     }
 
     fun updateFavorites(favoriteList: List<Show>) {
