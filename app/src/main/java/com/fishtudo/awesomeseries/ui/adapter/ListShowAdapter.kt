@@ -32,23 +32,23 @@ class ListShowAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (position == this.showList.size) {
-            holder.showLoading()
-            return
-        }
         holder.setShowItem(showList[position])
     }
 
     override fun getItemCount(): Int {
-        return showList.size + 1
+        return showList.size
     }
 
-    fun addItems(showList: List<Show>) {
+    fun addItems(newShows: List<Show>) {
         val previousSize = this.showList.size
-        this.showList.addAll(showList)
-        this.showList = this.showList.toSet().toMutableList()
-        notifyItemRangeRemoved(previousSize, 1)
-        notifyItemRangeInserted(previousSize, this.showList.size)
+
+        for (show in newShows) {
+            if (!showList.contains(show)) {
+                showList.add(show)
+            }
+        }
+
+        notifyItemRangeInserted(previousSize, showList.size - previousSize)
     }
 
     fun updateFavorites(favoriteList: List<Show>) {
@@ -82,7 +82,6 @@ class ListShowAdapter(
 
         fun setShowItem(show: Show) {
             this.show = show
-            hideLoading()
             itemView.seasonNumber.text = show.name
             show.image?.let {
                 imageUtil.downloadImage(context, it, itemView.image)
@@ -96,20 +95,6 @@ class ListShowAdapter(
                     favoriteList.any { show.id == it.id }
                 )
             )
-        }
-
-        fun showLoading() {
-            itemView.loading.visibility = View.VISIBLE
-            itemView.image.visibility = View.INVISIBLE
-            itemView.seasonNumber.visibility = View.INVISIBLE
-            itemView.favorite_star.visibility = View.INVISIBLE
-        }
-
-        private fun hideLoading() {
-            itemView.loading.visibility = View.INVISIBLE
-            itemView.image.visibility = View.VISIBLE
-            itemView.seasonNumber.visibility = View.VISIBLE
-            itemView.favorite_star.visibility = View.VISIBLE
         }
 
         private fun findImageResource(boolean: Boolean) =

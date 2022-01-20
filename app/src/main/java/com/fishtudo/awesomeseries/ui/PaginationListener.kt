@@ -11,7 +11,7 @@ abstract class PaginationListener(private val layoutManager: LinearLayoutManager
         val visibleItemCount = layoutManager.childCount
         val totalItemCount = layoutManager.itemCount
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-        if (!isLoading && !isLastPage) {
+        if (!isLoading() && !isLastPage) {
             if (visibleItemCount + firstVisibleItemPosition >=
                 totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= PAGE_SIZE
             ) {
@@ -22,10 +22,9 @@ abstract class PaginationListener(private val layoutManager: LinearLayoutManager
 
     protected abstract fun loadMoreItems()
     abstract val isLastPage: Boolean
-    abstract val isLoading: Boolean
+    abstract fun isLoading(): Boolean
 
     companion object {
-        const val PAGE_START = 1
-        private const val PAGE_SIZE = 230
+        private const val PAGE_SIZE = 14
     }
 }

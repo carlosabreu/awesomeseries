@@ -11,6 +11,7 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
@@ -23,6 +24,7 @@ import com.fishtudo.awesomeseries.repositories.Resource
 import com.fishtudo.awesomeseries.repositories.factories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.PaginationListener
 import com.fishtudo.awesomeseries.ui.adapter.ListShowAdapter
+import com.fishtudo.awesomeseries.ui.adapter.LoadingAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.ListFavoriteViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.ListShowViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListFavoriteViewModelFactory
@@ -35,10 +37,18 @@ class MainActivity : AppCompatActivity() {
 
     private var currentPage = 0
 
-    private var loading = false
+    private var loading = true
 
-    private val adapter by lazy {
+    private val showListAdapter by lazy {
         ListShowAdapter(context = this)
+    }
+
+    private val loadingAdapter by lazy {
+        LoadingAdapter(context = this)
+    }
+
+    private val concatAdapter by lazy {
+        ConcatAdapter(showListAdapter, loadingAdapter)
     }
 
     private val listShowViewModel by lazy {
@@ -60,8 +70,8 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
         setContentView(R.layout.activity_main)
-        setRecyclerViewUp()
         handleIntent(intent)
+        setRecyclerViewUp()
         loadFavorites()
     }
 
@@ -92,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         hideSearchInformation()
-        requestDefaultListItems(0)
+        requestItems(0)
     }
 
     private fun displaySearchInformation(query: String) {
@@ -124,7 +134,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         resource.data?.let {
-            adapter.addItems(it)
+            showListAdapter.addItems(it)
         }
     }
 
@@ -135,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         resource.data?.let {
-            adapter.updateFavorites(it)
+            showListAdapter.updateFavorites(it)
         }
     }
 
@@ -147,17 +157,21 @@ class MainActivity : AppCompatActivity() {
         val paginationListener: PaginationListener =
             object : PaginationListener(recyclerview.layoutManager as LinearLayoutManager) {
                 override fun loadMoreItems() {
-                    requestDefaultListItems(++currentPage)
+                    requestItems(++currentPage)
                 }
 
                 override val isLastPage: Boolean = false
-                override val isLoading: Boolean = loading
+                override fun isLoading(): Boolean = isPageLoading()
             }
-        recyclerview.adapter = adapter
+        recyclerview.adapter = concatAdapter
         recyclerview.addItemDecoration(DividerItemDecoration(this, VERTICAL))
         recyclerview.addOnScrollListener(paginationListener)
-        adapter.onItemClickListener = this::onItemClicked
-        adapter.onFavoriteItemClickListener = this::onFavoriteItemClickListener
+        showListAdapter.onItemClickListener = this::onItemClicked
+        showListAdapter.onFavoriteItemClickListener = this::onFavoriteItemClickListener
+    }
+
+    private fun isPageLoading(): Boolean {
+        return loading
     }
 
     private fun onItemClicked(show: Show) {
@@ -168,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun requestDefaultListItems(page: Int) {
+    private fun requestItems(page: Int) {
         loading = true
         listShowViewModel.listShowsByPage(page).observe(this) { resource ->
             onResultReceived(resource)
