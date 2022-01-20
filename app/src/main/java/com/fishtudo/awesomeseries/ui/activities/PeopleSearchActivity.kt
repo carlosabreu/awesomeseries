@@ -15,7 +15,7 @@ import com.fishtudo.awesomeseries.repositories.factories.TVMazeRepositoryFactory
 import com.fishtudo.awesomeseries.ui.adapter.PeopleAdapter
 import com.fishtudo.awesomeseries.ui.viewmodel.ListPeopleViewModel
 import com.fishtudo.awesomeseries.ui.viewmodel.factory.ListPeopleViewModelFactory
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_people_search.*
 
 class PeopleSearchActivity : AppCompatActivity() {
 
